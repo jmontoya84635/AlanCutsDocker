@@ -1,0 +1,154 @@
+{% extends "frontend/layout.html" %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'frontend/admin.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'frontend/admin.css' %}">
+{% endblock %}
+{% block body %}
+    <section>
+        <div class="container bg-primary-gradient py-4" id="content-section">
+            <div class="col-md-8 col-xl-6 text-center mx-auto my-3">
+                <h1 class="fw-bold text-success mb-4" style="font-size: 2.5rem">Admin Panel</h1>
+            </div>
+            <ul id="appointment-navbar" class="nav nav-pills d-flex justify-content-evenly">
+                <li class="nav-item">
+                    <a id="appointment-link" class="nav-link active">Active Appointments</a>
+                </li>
+                <li class="nav-item">
+                    <a id="messages-link" class="nav-link" aria-current="page">Messages</a>
+                </li>
+                <li class="nav-item">
+                    <a id="front-page-link" class="nav-link">Front Page</a>
+                </li>
+                <li class="nav-item">
+                    <a id="users-link" class="nav-link">Users</a>
+                </li>
+            </ul>
+            <div class="mt-4">
+                <div id="appointments">
+                    {% for appointment in appointments %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body px-4 py-4 px-md-5">
+                                    <div class="d-flex justify-content-between align-items-stretch">
+                                        <h3 class="fw-bold mb-0">{{ appointment.user.username }}</h3>
+                                        <span class="badge text-bg-light px-3 d-flex align-items-center">{{ appointment.time }} {{ appointment.weekday }} {{ appointment.date }}</span>
+                                    </div>
+                                    <br>
+                                    <h5 class="text-muted card-text">{{ appointment.reason }}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h2 class="fw-bold text-center mt-5">There are no active appointments!</h2>
+                    {% endfor %}
+                </div>
+                <div id="messages">
+                    {% for message in all_messages %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body px-4 py-4 px-md-5">
+                                    <div class="d-flex justify-content-between pb-3">
+                                        <h3 class="fw-bold mb-0">{{ message.name }}</h3>
+                                        <button class="btn btn-secondary btn-sm delete-message"
+                                                value="{{ message.id }}">Delete
+                                        </button>
+                                    </div>
+                                    <h6 class="card-text">Email:
+                                        {% if message.email %}{{ message.email }}{% else %}None{% endif %}</h6>
+                                    <h6 class="card-text">Phone:
+                                        {% if message.phone %}{{ message.phone }}{% else %}None{% endif %}</h6>
+                                    <h6 class="card-text">Message:</h6>
+                                    <h6 class="card-text">{{ message.message }}</h6>
+                                    <h6 class="text-muted pt-3">{{ message.timestamp }}</h6>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h2 class="fw-bold text-center mt-5">There are no Messages</h2>
+                    {% endfor %}
+                </div>
+                <div id="front-page">
+                    <div id="picture-div">
+                        {% for picture in all_pictures %}
+                            <div id="{{ picture.id }}" class="col mb-3 card shadow-sm picture">
+                                <div class="d-flex">
+                                    <div class="p-4">
+                                        <img src="{{ picture.img.url }}" class="card-img-top rounded" alt="...">
+                                        <div class="card-body">
+                                            <h3 class="card-text text-center fw-bold text-capitalize">{{ picture.name }}</h3>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-between py-4 pe-4 ps-0">
+                                        <h1 class="bi bi-arrow-up-square-fill move-picture-up"
+                                            style="font-size: 3rem; color: grey"></h1>
+                                        <h1 class="bi bi-x-square-fill style= delete-picture" id="{{ picture.id }}"
+                                            style="font-size: 3rem; color: red"></h1>
+                                        <h1 class="bi bi-arrow-down-square-fill move-picture-down"
+                                            style="font-size: 3rem; color: grey"></h1>
+                                    </div>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <h2 class="fw-bold text-center my-5">There are no pictures!</h2>
+                        {% endfor %}
+                    </div>
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <h1 class="fw-bold text-center py-3">New Image</h1>
+                                <form id="create-picture">
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="floatingInput"
+                                               placeholder="Image name" name="name" required>
+                                        <label for="floatingInput">Image Caption</label>
+                                    </div>
+                                    <div class="mb-3">
+                                        <input class="form-control" name="image" type="file" id="formFile"
+                                               accept="image/*" required>
+                                    </div>
+                                    <div class="d-flex flex-fill my-1">
+                                        <button type="submit" class="btn btn-primary flex-fill">Create</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="users">
+                    {% for user_obj in all_users %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body px-4 py-4 px-md-5">
+                                    <h3 class="fw-bold mb-3">{{ user_obj.username }}</h3>
+                                    <div class="d-flex justify-content-between flex-wrap mb-3">
+                                        <h6 class="text-muted card-text">Email: {{ user_obj.email }}</h6>
+                                        <h6 class="text-muted card-text">Phone: {{ user_obj.phone }}</h6>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <h4>All</h4>
+                                            <h4 class="text-center">{{ user_obj.appointment_summary.all }}</h4>
+                                        </div>
+                                        <div>
+                                            <h4>Active</h4>
+                                            <h4 style="color: lime"
+                                                class="text-center">{{ user_obj.appointment_summary.active }}</h4>
+                                        </div>
+                                        <div>
+                                            <h4>Cancelled</h4>
+                                            <h4 style="color: red"
+                                                class="text-center">{{ user_obj.appointment_summary.cancelled }}</h4>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h2 class="fw-bold text-center mt-5">There are no accounts!</h2>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

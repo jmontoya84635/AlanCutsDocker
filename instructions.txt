@@ -1,0 +1,39 @@
+How to configure a django project with docker and docker-compose
+0 Remove remote repository
+(git remote rm origin)
+1 Create a new virtual python environment
+(python3 -m venv .venv)
+2 Activate the virtual environment
+(source .venv/bin/activate)
+3 Install python packages and freeze to requirements.txt
+(pip install django, gunicorn, psycopg2-binary)
+4 Create a new django project
+(django-admin startproject myproject)
+5 modify ./Dockerfile
+(change line 14: COPY . /"insertFolder" /app)
+6 modify .env
+(Change secret key, debug, and superuser)
+7 modify project/settings.py
+(line 13: to "import os")
+(line 16: to "BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))")
+(line 23: add secret key to .env and replace to "SECRET_KEY = os.getenv('SECRET_KEY')")
+(line 26: to "DEBUG = os.getenv('DEBUG')")
+(line 28: to "ALLOWED_HOSTS = ['*']")
+* add "CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED').split(',')" to line 29
+(line 118: to "STATIC_URL = '/static/'")
+(line 119: to "STATIC_ROOT = '/static/'")
+8 modify entrypoint.sh
+(insert folder name in line 6)
+9 run docker-compose up --build
+
+
+DATABASES = {
+    "default": {
+        "ENGINE": os.environ.get("SQL_ENGINE"),
+        "NAME": os.environ.get("DB_NAME"),
+        "USER": os.environ.get("SUPER_USER_NAME"),
+        "PASSWORD": os.environ.get("SUPER_USER_PASSWORD"),
+        "HOST": os.environ.get("SQL_HOST"),
+        "PORT": os.environ.get("SQL_PORT"),
+    }
+}

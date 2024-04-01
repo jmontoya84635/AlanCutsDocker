@@ -1,0 +1,109 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon"
+          href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-NQyMx8gvXwcdwT6RciKPQBaqr5UxMrEJiNaZMw8FiA&s">
+    <meta name="csrf-token" content="{{ csrf_token }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Alan Cuts{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'frontend/layout.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'frontend/assets/bootstrap/css/bootstrap.min.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+            crossorigin="anonymous"></script>
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@3.0.5/dist/js.cookie.min.js"></script>
+    {% block script %}
+    {% endblock %}
+</head>
+<body>
+<nav class="navbar navbar-expand-md sticky-top navbar-shrink py-3 navbar-light" id="mainNav">
+    <div class="container"><a class="navbar-brand d-flex align-items-center" href="/">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-scissors"
+             viewBox="0 0 16 16">
+            <path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"></path>
+        </svg>
+        <span>Alan Cuts</span></a>
+        <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1"><span
+                class="visually-hidden">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navcol-1">
+            <ul class="navbar-nav mx-auto d-flex">
+                <li class="nav-item"><a id="home" class="nav-link" href="{% url 'index' %}">Home</a></li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item"><a id="appointment" class="nav-link" href="{% url 'appointment' %}">Make
+                        appointment</a></li>
+                    <li class="nav-item"><a id="profile" class="nav-link" href="{% url 'profile' %}">My
+                        profile</a></li>
+                {% else %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'login' %}">Log in</a></li>
+                {% endif %}
+                {% if user.is_superuser %}
+                    <li class="nav-item"><a id="admin-panel" class="nav-link" href="{% url 'admin_panel' %}">
+                        Admin Panel</a></li>
+                {% endif %}
+            </ul>
+            <br>
+            {% if user.is_authenticated %}
+                <a class="btn btn-primary shadow" role="button" href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a class="btn btn-primary shadow" role="button" href="{% url 'signup' %}">Sign up</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} text-center" role="alert">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% block body %}
+{% endblock %}
+<footer class="bg-primary-gradient" id="footer">
+    <div class="container py-4 py-lg-5">
+        <div class="row justify-content-center">
+            <div class="col-sm-4 col-md-3 text-center text-lg-start d-flex flex-column">
+                <h3 class="fs-6 fw-bold">Social Media</h3>
+                <ul class="list-unstyled">
+                    <li><a href="#">Instagram <i class="bi bi-instagram"></i> </a></li>
+                    <li><a href="#">Snapchat <i class="bi bi-snapchat"></i> </a></li>
+                    <li><a href="#">facebook <i class="bi-facebook"></i> </a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 text-center text-lg-start d-flex flex-column align-items-center order-first align-items-lg-start order-lg-last">
+                <div class="fw-bold d-flex align-items-center mb-2"><span
+                        class="bs-icon-sm bs-icon-circle bs-icon-primary d-flex justify-content-center align-items-center bs-icon me-2">        <svg
+                        xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-scissors"
+                        viewBox="0 0 16 16">
+            <path d="M3.5 3.5c-.614-.884-.074-1.962.858-2.5L8 7.226 11.642 1c.932.538 1.472 1.616.858 2.5L8.81 8.61l1.556 2.661a2.5 2.5 0 1 1-.794.637L8 9.73l-1.572 2.177a2.5 2.5 0 1 1-.794-.637L7.19 8.61zm2.5 10a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0m7 0a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"></path>
+        </svg></span><span>Alan Cuts</span></div>
+                <p class="text-muted">The best haircuts you can get in Elgin.</p>
+            </div>
+        </div>
+        <hr>
+        <div class="text-muted d-flex justify-content-between align-items-center pt-3">
+            <p class="mb-0">Copyright © 2024 Alan Cuts</p>
+        </div>
+    </div>
+</footer>
+<script>
+    let path = location.pathname;
+    if (path === "/") {
+        document.querySelector("#home").classList.add("active");
+    } else if (path === "/appointment") {
+        document.querySelector("#appointment").classList.add("active");
+    } else if (path === "/profile") {
+        document.querySelector("#profile").classList.add("active");
+    } else if (path === "/adminPanel") {
+        document.querySelector("#admin-panel").classList.add("active");
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+{% extends "frontend/layout.html" %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'frontend/profile.js' %}"></script>
+{% endblock %}
+{% block body %}
+    <section>
+        <div class="container bg-primary-gradient py-2" id="content-section">
+            <div class="col-md-8 col-xl-6 text-center mx-auto my-3">
+                <h1 class="fw-bold text-success mb-4" style="font-size: 2.5rem">Appointments</h1>
+            </div>
+            <ul id="appointment-navbar" class="nav nav-pills d-flex justify-content-evenly">
+                <li class="nav-item">
+                    <a class="nav-link active">All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" aria-current="page">Active</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">Cancelled</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link">Past</a>
+                </li>
+            </ul>
+            <div class="mt-4">
+                <div id="all-list-div">
+                    {% for appointment in all_appointments %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body px-4 py-4 px-md-5">
+                                    <h4 class="fw-bold card-title pb-4">{{ appointment.date }}
+                                        at {{ appointment.time }}</h4>
+                                    <h5 class="text-muted card-text pb-4">{{ appointment.reason }}</h5>
+                                    {% if not appointment.expired and not appointment.cancelled %}
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-primary shadow edit-appointment me-1 flex-fill"
+                                                    type="button">
+                                                Edit
+                                            </button>
+                                            <input type="hidden" value="{{ appointment.id }}">
+                                            <button class="btn btn-secondary shadow cancel-appointment flex-fill"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    style="font-size: .85rem" type="button">
+                                                Cancel Appointment
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                    {% if appointment.cancelled %}
+                                        {% if appointment.cancelField %}
+                                            <h1 class="fw-bold" style="color: red">Reason cancelled:</h1>
+                                            <p>{{ appointment.cancelField }}</p>
+                                        {% else %}
+                                            <h1 class="fw-bold" style="color: red">Cancelled</h1>
+                                            <p>No reason given</p>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h2 class="fw-bold text-center mt-5">You have not made any appointments yet!</h2>
+                    {% endfor %}
+                </div>
+                <div style="display: none" id="active-list-div">
+                    {% for appointment in active_appointments %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body px-4 py-4 px-md-5">
+                                    <h4 class="fw-bold card-title pb-4">{{ appointment.date }}
+                                        at {{ appointment.time }}</h4>
+                                    <h5 class="text-muted card-text pb-4">{{ appointment.reason }}</h5>
+                                    {% if not appointment.expired and not appointment.cancelled %}
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-primary shadow edit-appointment me-1 flex-fill"
+                                                    type="button">
+                                                Edit
+                                            </button>
+                                            <input type="hidden" value="{{ appointment.id }}">
+                                            <button class="btn btn-secondary shadow cancel-appointment flex-fill"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    style="font-size: .85rem" type="button">
+                                                Cancel Appointment
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                    {% if appointment.cancelled %}
+                                        {% if appointment.cancelField %}
+                                            <h1 class="fw-bold" style="color: red">Reason cancelled:</h1>
+                                            <p>{{ appointment.cancelField }}</p>
+                                        {% else %}
+                                            <h1 class="fw-bold" style="color: red">Cancelled</h1>
+                                            <p>No reason given</p>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h2 class="fw-bold text-center mt-5">You do not have not any active appointments</h2>
+                    {% endfor %}
+                </div>
+                <div style="display: none" id="cancelled-list-div">
+                    {% for appointment in cancelled_appointments %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body px-4 py-4 px-md-5">
+                                    <h4 class="fw-bold card-title pb-4">{{ appointment.date }}
+                                        at {{ appointment.time }}</h4>
+                                    <h5 class="text-muted card-text pb-4">{{ appointment.reason }}</h5>
+                                    {% if not appointment.expired and not appointment.cancelled %}
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-primary shadow edit-appointment me-1 flex-fill"
+                                                    type="button">
+                                                Edit
+                                            </button>
+                                            <input type="hidden" value="{{ appointment.id }}">
+                                            <button class="btn btn-secondary shadow cancel-appointment flex-fill"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    style="font-size: .85rem" type="button">
+                                                Cancel Appointment
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                    {% if appointment.cancelled %}
+                                        {% if appointment.cancelField %}
+                                            <h1 class="fw-bold" style="color: red">Reason cancelled:</h1>
+                                            <p>{{ appointment.cancelField }}</p>
+                                        {% else %}
+                                            <h1 class="fw-bold" style="color: red">Cancelled</h1>
+                                            <p>No reason given</p>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h2 class="fw-bold text-center mt-5">You have not made any cancelled appointments.</h2>
+                    {% endfor %}
+                </div>
+                <div style="display: none" id="past-list-div">
+                    {% for appointment in past_appointments %}
+                        <div class="col mb-3">
+                            <div class="card shadow-sm">
+                                <div class="card-body px-4 py-4 px-md-5">
+                                    <h4 class="fw-bold card-title pb-4">{{ appointment.date }}
+                                        at {{ appointment.time }}</h4>
+                                    <h5 class="text-muted card-text pb-4">{{ appointment.reason }}</h5>
+                                    {% if not appointment.expired and not appointment.cancelled %}
+                                        <div class="d-flex justify-content-end">
+                                            <button class="btn btn-primary shadow edit-appointment me-1 flex-fill"
+                                                    type="button">
+                                                Edit
+                                            </button>
+                                            <input type="hidden" value="{{ appointment.id }}">
+                                            <button class="btn btn-secondary shadow cancel-appointment flex-fill"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                    style="font-size: .85rem" type="button">
+                                                Cancel Appointment
+                                            </button>
+                                        </div>
+                                    {% endif %}
+                                    {% if appointment.cancelled %}
+                                        {% if appointment.cancelField %}
+                                            <h1 class="fw-bold" style="color: red">Reason cancelled:</h1>
+                                            <p>{{ appointment.cancelField }}</p>
+                                        {% else %}
+                                            <h1 class="fw-bold" style="color: red">Cancelled</h1>
+                                            <p>No reason given</p>
+                                        {% endif %}
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <h2 class="fw-bold text-center mt-5">You do not have any past appointments.</h2>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Are you sure you want to cancel?</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-floating">
+                        <textarea class="form-control" placeholder="Reason (optional)" id="floatingTextarea"></textarea>
+                        <label for="floatingTextarea">Reason (optional)</label>
+                    </div>
+                    <input id="appointment-id" type="hidden" value="">
+                </div>
+                <div class="modal-footer d-flex">
+                    <button id="modal-submit" type="button" class="btn btn-secondary flex-fill shadow">Cancel
+                        Appointment
+                    </button>
+                    <button type="button" class="btn btn-primary flex-fill shadow" data-bs-dismiss="modal">Go back
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

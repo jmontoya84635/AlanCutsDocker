@@ -1,0 +1,113 @@
+{% extends 'frontend/layout.html' %}
+{% load static %}
+{% block script %}
+    <script src="{% static 'frontend/appointment.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'frontend/appointment.css' %}">
+{% endblock %}
+{% block body %}
+    <div class="container bg-primary-gradient py-3">
+        <div id="alerts"></div>
+        {% if user.is_superuser %}
+            <h2 style="color: red" class="text-center" id="isSuperUser"><strong>You are signed in as an admin!</strong>
+            </h2>
+        {% endif %}
+        <div class="container text-center">
+            <div class="row">
+                <div class="col-3">
+                    <button id="previousWeek" class="btn btn-primary flex-fill"><i class="bi bi-arrow-left"></i>
+                    </button>
+                </div>
+                <div class="col-6">
+                    <h3><strong>This Week</strong></h3>
+                    <p id="currWeek" class="text-muted"></p>
+                </div>
+                <div class="col-3">
+                    <button id="nextWeek" class="btn btn-primary flex-fill"><i class="bi bi-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+        <table style="width: 100%"
+               class="table table-bordered equal-width">
+            <thead>
+            <tr>
+                <th style="width: 45px; font-size: 0.7rem"></th>
+                <th class="text-center">Sun</th>
+                <th class="text-center">Mon</th>
+                <th class="text-center">Tue</th>
+                <th class="text-center">Wed</th>
+                <th class="text-center">Thu</th>
+                <th class="text-center">Fri</th>
+                <th class="text-center">Sat</th>
+            </tr>
+            <tr id="dateRow">
+                <th class="appointmentDate">Date</th>
+                <th class="appointmentDate text-center"></th>
+                <th class="appointmentDate text-center"></th>
+                <th class="appointmentDate text-center"></th>
+                <th class="appointmentDate text-center"></th>
+                <th class="appointmentDate text-center"></th>
+                <th class="appointmentDate text-center"></th>
+                <th class="appointmentDate text-center"></th>
+            </tr>
+            </thead>
+            <tbody id="scheduler-body"></tbody>
+        </table>
+        {% if user.is_superuser %}
+            <div class="container text-center">
+                <div class="row">
+                    <div class="col-6">
+                        <button class="btn btn-secondary" style="width: 150px" id="cancel-time-slots">Cancel</button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-primary" style="width: 150px" id="submit-time-slots">Save</button>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div><br>
+
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+         aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Create Appointment</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="/schedule" method="post">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="container col-12">
+                            <h1 class="text-center">Appointment</h1>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="date">Date</label>
+                                    <input type="date" class="form-control" id="date" name="date" readonly>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group">
+                                    <label for="time">Time</label>
+                                    <input type="time" class="form-control" id="time" name="time" readonly>
+                                </div>
+                            </div>
+                            {% if not user.is_superuser %}
+                                <div class="row">
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea class="form-control" id="description" name="description"></textarea>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-evenly">
+                        <button type="button" class="btn btn-secondary flex-fill" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary flex-fill">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
